@@ -9,9 +9,8 @@ on:
     branches: [ master ]
 
 jobs:
-  lint: 
-    runs-on: node22
-    if: github.actor != 'desu-bot' # do not run after release
+  lint:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/init
@@ -28,7 +27,7 @@ jobs:
   test-node:
     strategy:
       matrix:
-        node-version: [node20, node22, node24]
+        node-version: [ubuntu-22.04, ubuntu-24.04, ubuntu-latest]
     runs-on: ${{ matrix.node-version }}
     steps:
       - uses: actions/checkout@v4
@@ -37,7 +36,7 @@ jobs:
         run: pnpm run test:ci
 
   test-bun:
-    runs-on: node22
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/init
@@ -46,7 +45,7 @@ jobs:
         run: pnpm run test:bun
 
   test-deno:
-    runs-on: node22
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/init
@@ -57,7 +56,7 @@ jobs:
         run: pnpm run test:deno
 
   test-web:
-    runs-on: docker
+    runs-on: ubuntu-latest
     container: mcr.microsoft.com/playwright:v1.57.0-noble
 
     steps:
@@ -71,7 +70,7 @@ jobs:
           command: pnpm run test:browser
 
   e2e:
-    runs-on: node22
+    runs-on: ubuntu-latest
     needs: [lint, test-node, test-web, test-bun, test-deno]
     permissions:
       contents: read
